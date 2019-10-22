@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './decideSport.css'
 
 class decideSport extends Component {
 
@@ -6,18 +7,15 @@ class decideSport extends Component {
         super(props);
 
         this.state ={
-            longitude: 0,
+            latitude: null,
             error: ''
         }
-    }
-
     
-    render() {
         window.navigator.geolocation.getCurrentPosition(
             (position) => {
                 console.log(position);
                 this.setState({
-                    longitude: position.coords.longitude
+                    latitude: position.coords.latitude
                 })
             },
             (err) =>{
@@ -26,18 +24,58 @@ class decideSport extends Component {
                     error: err.message
                 })
             }
-        );      
-        
-        const {longitude, error} = this.state;
+        );  
+    }
 
-        if (longitude !== 0 && !error){
+    componentDidMount(){
+        console.log('did mount calisti');
+    }
+
+    componentDidUpdate(){
+        console.log('did update calisti');
+    }
+
+    componentWillUnmount(){
+        this.setState({
+            latitude: 0
+        });
+    }
+    
+    decideSport(lat){
+        const currentMonth = new Date().getMonth();
+        const winter = {
+            text: 'You can go to Snowboard',
+            iconName: 'snowflake'
+        }
+        const summer = {
+            text: 'Time to Swim',
+            iconName: 'sun'
+        }
+        if (lat <0 ){
+             //guney yarimkure
+            return currentMonth > 3 && currentMonth < 8 ? winter : summer;            
+        }
+        else {
+            // kuzey yarimkure
+            return currentMonth > 8 || currentMonth < 3 ? winter : summer;
+        }
+    }
+    render() {
+        
+        const {latitude, error} = this.state;
+
+        if (latitude && !error){
+            const sport = this.decideSport(latitude)
             return(
-                <div>
-                    Longitude: {longitude}
+                <div className={`${sport.iconName}-wrapper decide-sport-container`}>
+                    <h2 className="ui header">
+                        <i className={`${sport.iconName} outline icon`}></i>
+                        <div className="content">{sport.text}</div>
+                    </h2>
                 </div>
             )
         }
-        else if (longitude === 0 && error){
+        else if (latitude && error){
             return(
                 <div>
                     Error: {error}
