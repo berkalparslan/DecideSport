@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './decideSport.css'
+import Loader from './loader';
 
 class decideSport extends Component {
 
@@ -84,7 +85,7 @@ class decideSport extends Component {
         }
         return (
             <div>
-                Loading...
+                <Loader text='Allow Location pls'/>
             </div>
         );
     }
